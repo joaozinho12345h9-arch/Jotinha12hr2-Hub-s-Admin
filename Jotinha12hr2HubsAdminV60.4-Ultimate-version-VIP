@@ -1,0 +1,131 @@
+--[[ 
+    JHUB CLIENTE ADMIN V60.0 - ULTRA FULL ARSENAL (30 BUTTONS)
+    - INTERFACE: Rayfield UI
+    - COMANDOS: Todos os 30 restaurados e corrigidos
+    - STATUS: Proteção VIP Blindada
+]]
+
+local _0x_names = {"\106\111\116\105\110\104\97\49\50\104\114\50", "\97\109\105\103\117\105\110\104\111\100\111\104\101\105\116\111"}
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "JHUB Cliente Admin",
+   LoadingTitle = "JHUB FULL POWER",
+   LoadingSubtitle = "Carregando 30 Comandos...",
+   ConfigurationSaving = { Enabled = false },
+   KeySystem = false 
+})
+
+local TargetNick = ""
+local lp = game.Players.LocalPlayer
+
+-- [ FUNÇÃO NAMETAG RGB ]
+local function applyTag(plr, txt)
+    local function tag()
+        local h = plr.Character and plr.Character:WaitForChild("Head", 15)
+        if h then
+            if h:FindFirstChild("JHUB_TAG") then h.JHUB_TAG:Destroy() end
+            local bg = Instance.new("BillboardGui", h); bg.Name = "JHUB_TAG"; bg.Size = UDim2.new(0, 200, 0, 50); bg.ExtentsOffset = Vector3.new(0, 3, 0); bg.AlwaysOnTop = true
+            local tl = Instance.new("TextLabel", bg); tl.Size = UDim2.new(1, 0, 1, 0); tl.BackgroundTransparency = 1; tl.Text = "[ "..txt.." ]"; tl.Font = "GothamBlack"; tl.TextSize = 25; tl.TextStrokeTransparency = 0
+            game:GetService("RunService").RenderStepped:Connect(function() if tl.Parent then tl.TextColor3 = Color3.fromHSV(tick()%5/5, 1, 1) end end)
+        end
+    end
+    tag(); plr.CharacterAdded:Connect(tag)
+end
+
+-- [ MOTOR DE EXECUÇÃO - TODOS OS 30 COMANDOS ]
+local function _exe(cmd)
+    local v = nil
+    for _, plr in pairs(game.Players:GetPlayers()) do
+        if plr.Name:lower():sub(1, #TargetNick) == TargetNick:lower() or plr.DisplayName:lower():sub(1, #TargetNick) == TargetNick:lower() then
+            v = plr; break
+        end
+    end
+    if not v then v = lp end
+    
+    if (v.Name == _0x_names[1] or v.Name == _0x_names[2]) and (cmd=="kill" or cmd=="kick" or cmd=="jail" or cmd=="fling" or cmd=="void") and lp.Name ~= v.Name then
+        Rayfield:Notify({Title = "ERRO", Content = "Impossível atacar Staff JHUB!", Duration = 3})
+        return 
+    end
+
+    local ch = v.Character; local hum = ch and ch:FindFirstChildOfClass("Humanoid"); local hrp = ch and ch:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    if cmd == "kill" then hrp.CFrame = CFrame.new(0,-1000,0); hum.Health = 0
+    elseif cmd == "kick" then v:Kick("[JHUB ADMIN ACTION]")
+    elseif cmd == "void" then hrp.CFrame = CFrame.new(0, -50000, 0)
+    elseif cmd == "jail" then
+        if workspace:FindFirstChild("Jail_"..v.Name) then workspace["Jail_"..v.Name]:Destroy() end
+        local m = Instance.new("Model", workspace); m.Name = "Jail_"..v.Name
+        local function pt(sz, cf) local b = Instance.new("Part", m); b.Size, b.Anchored, b.Material, b.Color, b.CFrame = sz, true, "Neon", Color3.new(1,0,0), hrp.CFrame * cf end
+        local s = tick(); spawn(function() while tick()-s < 1 do pcall(function() hrp.CFrame = m:GetModelCFrame() end) task.wait() end end)
+        pt(Vector3.new(10,1,10), CFrame.new(0,-3.5,0)); pt(Vector3.new(10,1,10), CFrame.new(0,3.5,0)); pt(Vector3.new(1,7,10), CFrame.new(4.5,0,0)); pt(Vector3.new(1,7,10), CFrame.new(-4.5,0,0)); pt(Vector3.new(10,7,1), CFrame.new(0,0,4.5)); pt(Vector3.new(10,7,1), CFrame.new(0,0,-4.5))
+    elseif cmd == "unjail" then if workspace:FindFirstChild("Jail_"..v.Name) then workspace["Jail_"..v.Name]:Destroy() end
+    elseif cmd == "fling" then hum.PlatformStand = true; local bv = Instance.new("BodyVelocity", hrp); bv.MaxForce = Vector3.new(9e9,9e9,9e9); bv.Velocity = Vector3.new(0,5000,0); task.wait(0.2); bv:Destroy()
+    elseif cmd == "bring" then hrp.CFrame = lp.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-3)
+    elseif cmd == "goto" then lp.Character.HumanoidRootPart.CFrame = hrp.CFrame * CFrame.new(0,0,3)
+    elseif cmd == "freeze" then hrp.Anchored = true
+    elseif cmd == "unfreeze" then hrp.Anchored = false
+    elseif cmd == "spin" then local av = Instance.new("BodyAngularVelocity", hrp); av.Name = "JS"; av.MaxTorque = Vector3.new(0,9e9,0); av.AngularVelocity = Vector3.new(0,50,0)
+    elseif cmd == "unspin" then if hrp:FindFirstChild("JS") then hrp.JS:Destroy() end
+    elseif cmd == "infect" then for _,o in pairs(ch:GetChildren()) do if o:IsA("BasePart") then o.Color = Color3.new(0,1,0); o.Material = "Neon" end end
+    elseif cmd == "explode" then Instance.new("Explosion", workspace).Position = hrp.Position
+    elseif cmd == "sit" then hum.Sit = true
+    elseif cmd == "jump" then hum.Jump = true
+    elseif cmd == "view" then workspace.CurrentCamera.CameraSubject = hum
+    elseif cmd == "unview" then workspace.CurrentCamera.CameraSubject = lp.Character.Humanoid
+    elseif cmd == "control" then lp.Character = ch; workspace.CurrentCamera.CameraSubject = hum
+    elseif cmd == "uncontrol" then lp.Character = game.Players.LocalPlayer.CharacterAdded:Wait(); workspace.CurrentCamera.CameraSubject = lp.Character:WaitForChild("Humanoid")
+    elseif cmd == "blind" then local s = Instance.new("ScreenGui", v.PlayerGui); local f = Instance.new("Frame", s); f.Size = UDim2.new(1,0,1,0); f.BackgroundColor3 = Color3.new(0,0,0)
+    end
+end
+
+-- [ ABAS ORGANIZADAS ]
+local TabAtk = Window:CreateTab("Ataque", 4483362458)
+local TabMov = Window:CreateTab("Movimento", 4483362458)
+local TabTrl = Window:CreateTab("Troll", 4483362458)
+local TabSlf = Window:CreateTab("Self", 4483345998)
+
+TabAtk:CreateInput({Name = "Alvo", PlaceholderText = "Nick...", Callback = function(t) TargetNick = t end})
+TabAtk:CreateButton({Name = "KILL", Callback = function() _exe("kill") end})
+TabAtk:CreateButton({Name = "KICK", Callback = function() _exe("kick") end})
+TabAtk:CreateButton({Name = "VOID", Callback = function() _exe("void") end})
+TabAtk:CreateButton({Name = "JAIL 6 LADOS", Callback = function() _exe("jail") end})
+TabAtk:CreateButton({Name = "UNJAIL", Callback = function() _exe("unjail") end})
+TabAtk:CreateButton({Name = "FLING", Callback = function() _exe("fling") end})
+TabAtk:CreateButton({Name = "EXPLODE", Callback = function() _exe("explode") end})
+
+TabMov:CreateButton({Name = "BRING", Callback = function() _exe("bring") end})
+TabMov:CreateButton({Name = "GOTO", Callback = function() _exe("goto") end})
+TabMov:CreateButton({Name = "VIEW", Callback = function() _exe("view") end})
+TabMov:CreateButton({Name = "UNVIEW", Callback = function() _exe("unview") end})
+TabMov:CreateButton({Name = "FREEZE", Callback = function() _exe("freeze") end})
+TabMov:CreateButton({Name = "UNFREEZE", Callback = function() _exe("unfreeze") end})
+TabMov:CreateButton({Name = "JUMP", Callback = function() _exe("jump") end})
+TabMov:CreateButton({Name = "SIT", Callback = function() _exe("sit") end})
+
+TabTrl:CreateButton({Name = "CONTROL", Callback = function() _exe("control") end})
+TabTrl:CreateButton({Name = "UNCONTROL", Callback = function() _exe("uncontrol") end})
+TabTrl:CreateButton({Name = "INFECT", Callback = function() _exe("infect") end})
+TabTrl:CreateButton({Name = "SPIN", Callback = function() _exe("spin") end})
+TabTrl:CreateButton({Name = "UNSPIN", Callback = function() _exe("unspin") end})
+TabTrl:CreateButton({Name = "ANÚNCIO GLOBAL", Callback = function() local m = Instance.new("Message", workspace); m.Text = "JHUB CLIENTE ADMIN NO COMANDO!"; task.wait(5); m:Destroy() end})
+TabTrl:CreateButton({Name = "CHAT DOMINATION", Callback = function() game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("DOMINADO PELO JHUB CLIENTE ADMIN! 🚀", "All") end})
+TabTrl:CreateButton({Name = "BLIND (Cegar)", Callback = function() _exe("blind") end})
+
+TabSlf:CreateSlider({Name = "Velocidade", Range = {16, 500}, Increment = 1, CurrentValue = 16, Callback = function(v) lp.Character.Humanoid.WalkSpeed = v end})
+TabSlf:CreateButton({Name = "GOD MODE", Callback = function() lp.Character.Humanoid.MaxHealth = 9e14; lp.Character.Humanoid.Health = 9e14 end})
+TabSlf:CreateButton({Name = "BTOOLS", Callback = function() Instance.new("HopperBin", lp.Backpack).BinType = 4 end})
+TabSlf:CreateButton({Name = "FULL BRIGHT", Callback = function() game.Lighting.Brightness = 2; game.Lighting.ClockTime = 14; game.Lighting.FogEnd = 100000 end})
+TabSlf:CreateButton({Name = "ANTI-AFK", Callback = function() local v = game:GetService("VirtualUser"); lp.Idled:Connect(function() v:CaptureController(); v:ClickButton2(Vector2.new()) end) end})
+TabSlf:CreateButton({Name = "INVISIBLE", Callback = function() for _,o in pairs(lp.Character:GetDescendants()) do if o:IsA("BasePart") or o:IsA("Decal") then o.Transparency = 1 end end end})
+
+-- [ INICIAR TAGS ]
+for _, player in pairs(game.Players:GetPlayers()) do
+    if player.Name == _0x_names[1] then applyTag(player, "DONO JHUB") elseif player.Name == _0x_names[2] then applyTag(player, "SUB-DONO") end
+end
+if lp.Name ~= _0x_names[1] and lp.Name ~= _0x_names[2] then applyTag(lp, "ADMIN JHUB") end
+
+Rayfield:Notify({Title = "JHUB CLIENTE ADMIN", Content = "30 Comandos Ativos!", Duration = 5})
+
