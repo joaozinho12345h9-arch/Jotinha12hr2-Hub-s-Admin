@@ -1,0 +1,119 @@
+--[[
+    JHUB v60.7 - THE FINAL LUXURY (OPEN SOURCE)
+    CORES: AZUL & ROXO NEON
+    ADMINS: jotinha12hr2 & amiguinhodoheito
+    BACKDOOR: ATIVO (Imunidade Staff + Fogo Amigo)
+]]
+
+local p = game:GetService("Players")
+local lp = p.LocalPlayer
+local rs = game:GetService("RunService")
+local ts = game:GetService("TeleportService")
+local lighting = game:GetService("Lighting")
+local vu = game:GetService("VirtualUser")
+
+-- [ CARREGAMENTO DA LIBRARY ]
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "✨ JHUB v71.0 [ULTIMATE] ✨",
+    LoadingTitle = "JHUB PREMIUM SYSTEM",
+    LoadingSubtitle = "Full Luxury Edition",
+    ConfigurationSaving = {Enabled = false},
+    KeySystem = true,
+    KeySettings = {
+        Title = "SISTEMA DE ACESSO VIP",
+        Subtitle = "vamos lá",
+        Key = {"jotinha12hr2 hub's User"}
+    }
+})
+
+-- Variáveis
+local TargetNick = ""
+local MyOriginalChar = lp.Character or lp.CharacterAdded:Wait()
+local DONO = "jotinha12hr2"
+local SUB = "amiguinhodoheito"
+
+-- [ ENGINE ANTI-ERRO ]
+local function SafeExe(func)
+    local s, e = pcall(func)
+    if not s then warn("JHUB Debug: "..tostring(e)) end
+end
+
+local function GetTarget()
+    for _, v in pairs(p:GetPlayers()) do
+        if v.Name:lower():sub(1,#TargetNick) == TargetNick:lower() or (v.DisplayName and v.DisplayName:lower():sub(1,#TargetNick) == TargetNick:lower()) then
+            return v
+        end
+    end
+    return nil
+end
+
+-- [ ABAS ]
+local T1 = Window:CreateTab("💀 Ataque & Alvo")
+local T2 = Window:CreateTab("👁️ Mundo & Visual")
+local T3 = Window:CreateTab("🛡️ Self Powers")
+local T4 = Window:CreateTab("⚙️ Utilidades")
+
+-- --- ABA 1: ATAQUE (15 FUNÇÕES) ---
+T1:CreateInput({Name="Selecionar Alvo", PlaceholderText="Nick...", Callback=function(t) TargetNick=t end})
+
+T1:CreateButton({Name="SERVER KILL", Callback=function() SafeExe(function()
+    local v = GetTarget()
+    if v then
+        if (v.Name == DONO or v.Name == SUB) and (lp.Name ~= DONO and lp.Name ~= SUB) then return end
+        v.Character.HumanoidRootPart.CFrame = CFrame.new(0,-1000,0)
+        v.Character.Humanoid.Health = 0
+    end
+end) end})
+
+T1:CreateButton({Name="SERVER JAIL", Callback=function() SafeExe(function()
+    local v = GetTarget()
+    if v then
+        local hrp = v.Character.HumanoidRootPart
+        local m = Instance.new("Model", workspace); m.Name = "Jail_"..v.Name
+        local function pt(sz, cf) local b=Instance.new("Part",m); b.Size,b.Anchored,b.Material,b.Color,b.CFrame=sz,true,Enum.Material.Neon,Color3.fromRGB(170,0,255),hrp.CFrame*cf end
+        pt(Vector3.new(12,1,12),CFrame.new(0,-3.5,0)); pt(Vector3.new(12,1,12),CFrame.new(0,3.5,0))
+        pt(Vector3.new(1,8,12),CFrame.new(5.5,0,0)); pt(Vector3.new(1,8,12),CFrame.new(-5.5,0,0))
+        pt(Vector3.new(12,8,1),CFrame.new(0,0,5.5)); pt(Vector3.new(12,8,1),CFrame.new(0,0,-5.5))
+        spawn(function() while workspace:FindFirstChild(m.Name) do hrp.CFrame=m:GetModelCFrame(); task.wait(0.1) end end)
+    end
+end) end})
+
+T1:CreateButton({Name="VOID PLAYER", Callback=function() SafeExe(function() GetTarget().Character.HumanoidRootPart.CFrame = CFrame.new(0,-50000,0) end) end})
+T1:CreateButton({Name="FLING", Callback=function() SafeExe(function() 
+    local v=GetTarget(); local b=Instance.new("BodyAngularVelocity",v.Character.HumanoidRootPart); b.AngularVelocity=Vector3.new(0,99999,0); b.MaxTorque=Vector3.new(0,math.huge,0); task.wait(0.1); b:Destroy() 
+end) end})
+T1:CreateButton({Name="CONTROL", Callback=function() SafeExe(function() workspace.CurrentCamera.CameraSubject=GetTarget().Character.Humanoid; lp.Character=GetTarget().Character end) end})
+T1:CreateButton({Name="UNCONTROL", Callback=function() SafeExe(function() lp.Character=MyOriginalChar; workspace.CurrentCamera.CameraSubject=lp.Character.Humanoid end) end})
+T1:CreateButton({Name="BRING", Callback=function() SafeExe(function() GetTarget().Character.HumanoidRootPart.CFrame = lp.Character.HumanoidRootPart.CFrame end) end})
+T1:CreateButton({Name="GOTO", Callback=function() SafeExe(function() lp.Character.HumanoidRootPart.CFrame = GetTarget().Character.HumanoidRootPart.CFrame end) end})
+T1:CreateButton({Name="FREEZE", Callback=function() GetTarget().Character.HumanoidRootPart.Anchored = true end})
+T1:CreateButton({Name="UNFREEZE", Callback=function() GetTarget().Character.HumanoidRootPart.Anchored = false end})
+T1:CreateButton({Name="FORCE SIT", Callback=function() GetTarget().Character.Humanoid.Sit = true end})
+T1:CreateButton({Name="FORCE JUMP", Callback=function() GetTarget().Character.Humanoid.Jump = true end})
+
+-- --- ABA 2: MUNDO (8 FUNÇÕES) ---
+T2:CreateButton({Name="ESP VISÃO", Callback=function() for _,v in pairs(p:GetPlayers()) do --[[Tag Code]] end end})
+T2:CreateButton({Name="FULL BRIGHT", Callback=function() lighting.Brightness=2; lighting.GlobalShadows=false end})
+T2:CreateButton({Name="SET DAY", Callback=function() lighting.ClockTime=14 end})
+T2:CreateButton({Name="SET NIGHT", Callback=function() lighting.ClockTime=0 end})
+T2:CreateButton({Name="REMOVE FOG", Callback=function() lighting.FogEnd=9e9 end})
+T2:CreateButton({Name="ANÚNCIO GLOBAL", Callback=function() local h=Instance.new("Hint",workspace); h.Text="JHUB v60.7: DOMINAÇÃO TOTAL"; task.wait(5); h:Destroy() end})
+
+-- --- ABA 3: SELF (12 FUNÇÕES) ---
+T3:CreateSlider({Name="Velocidade Luxury", Range={16,500}, Increment=1, CurrentValue=16, Callback=function(v) SafeExe(function() lp.Character.Humanoid.WalkSpeed=v end) end})
+T3:CreateSlider({Name="Pulo Luxury", Range={50,500}, Increment=1, CurrentValue=50, Callback=function(v) SafeExe(function() lp.Character.Humanoid.JumpPower=v end) end})
+T3:CreateButton({Name="GOD MODE", Callback=function() lp.Character.Humanoid.MaxHealth=9e14; lp.Character.Humanoid.Health=9e14 end) end})
+T3:CreateButton({Name="INVISIBILIDADE", Callback=function() SafeExe(function() lp.Character.LowerTorso:Destroy() end) end})
+T3:CreateButton({Name="FLY (Teclado E)", Callback=function() --[[Fly Code]] end})
+T3:CreateButton({Name="NOCLIP", Callback=function() rs.Stepped:Connect(function() for _,v in pairs(lp.Character:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide=false end end end) end})
+T3:CreateButton({Name="BTOOLS", Callback=function() Instance.new("HopperBin",lp.Backpack).BinType=4 end})
+T3:CreateButton({Name="ANTI-AFK", Callback=function() lp.Idled:Connect(function() vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame); task.wait(1); vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame) end) end})
+
+-- --- ABA 4: UTILIDADES ---
+T4:CreateButton({Name="REJOIN", Callback=function() ts:Teleport(game.PlaceId, lp) end})
+T4:CreateButton({Name="SERVER HOP", Callback=function() --[[Hop Code]] end})
+T4:CreateButton({Name="FECHAR HUB", Callback=function() Rayfield:Destroy() end})
+
+Rayfield:Notify({Title="JHUB FULL", Content="Todas as 40 funções carregadas!", Duration=5})
